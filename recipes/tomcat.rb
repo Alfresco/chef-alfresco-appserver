@@ -1,8 +1,6 @@
-alfresco_components =  node['appserver']['alfresco']['components']
+alfresco_components = node['appserver']['alfresco']['components']
+run_single_instance = node['tomcat']['run_single_instance']
 alfresco_home = node['appserver']['alfresco']['home']
-
-# set transient alfresco_home to be used by other recipes
-node.run_state['alfresco_home'] = alfresco_home
 
 rmi_server_hostname = node['appserver']['alfresco']['rmi_server_hostname']
 
@@ -11,13 +9,15 @@ include_recipe 'alfresco-utils::package-repositories'
 
 include_recipe 'alfresco-utils::java' if node['appserver']['install_java']
 
-if node['tomcat']['run_single_instance']
+if run_single_instance
+  log 'Tomcat single Instance settings'
   logs_path = "#{alfresco_home}/logs"
   node.default['tomcat']['java_options']['log_paths'] = "-Djava.util.logging.config.file=#{alfresco_home}/conf/logging.properties -Dlog4j.configuration=alfresco/log4j.properties -Xloggc:#{logs_path}/gc.log -Dlogfilename=#{logs_path}/alfresco.log -XX:ErrorFile=#{logs_path}/jvm_crash%p.log -XX:HeapDumpPath=#{logs_path}/"
   if alfresco_components.include?('solr')
     node.default['tomcat']['java_options']['rmi_and_solr'] = "-Dalfresco.home=#{alfresco_home} -Djava.rmi.server.hostname=#{rmi_server_hostname} -Dsolr.solr.home=#{node['appserver']['alfresco']['solr']['home']} -Dsolr.solr.model.dir=#{node['appserver']['alfresco']['solr']['alfresco_models']} -Dsolr.solr.content.dir=#{node['appserver']['alfresco']['solr']['contentstore.path']}"
   end
 else
+  log 'Tomcat multi Instance settings'
   if alfresco_components.include?('repo')
     name = 'repo'
     instance_home = "#{alfresco_home}/alfresco"
@@ -44,8 +44,6 @@ else
   end
 end
 
-node.default['artifacts']['alfresco-mmt']['enabled'] = true
-node.default['artifacts']['sharedclasses']['enabled'] = true
 node.default['artifacts']['catalina-jmx']['enabled'] = true
 
 context_template_cookbook = node['tomcat']['context_template_cookbook']
@@ -61,26 +59,29 @@ end
 jmxremote_databag = node['appserver']['alfresco']['jmxremote_databag']
 jmxremote_databag_items = node['appserver']['alfresco']['jmxremote_databag_items']
 
-begin
-  jmxremote_databag_items.each do |jmxremote_databag_item|
-    db_item = data_bag_item(jmxremote_databag, jmxremote_databag_item)
-    node.default['tomcat']["jmxremote_#{jmxremote_databag_item}_role"] = db_item['username']
-    node.default['tomcat']["jmxremote_#{jmxremote_databag_item}_password"] = db_item['password']
-    node.default['tomcat']["jmxremote_#{jmxremote_databag_item}_access"] = db_item['access']
+ruby_block 'Setting jxm remote attributes for Tomcat' do
+  block do
+    begin
+      jmxremote_databag_items.each do |jmxremote_databag_item|
+        db_item = data_bag_item(jmxremote_databag, jmxremote_databag_item)
+        node.default['tomcat']["jmxremote_#{jmxremote_databag_item}_role"] = db_item['username']
+        node.default['tomcat']["jmxremote_#{jmxremote_databag_item}_password"] = db_item['password']
+        node.default['tomcat']["jmxremote_#{jmxremote_databag_item}_access"] = db_item['access']
+      end
+    rescue
+      Chef::Log.warn("Error fetching databag #{jmxremote_databag},  item #{jmxremote_databag_items}")
+    end
   end
-rescue
-  Chef::Log.warn("Error fetching databag #{jmxremote_databag},  item #{jmxremote_databag_items}")
+  action :run
 end
 
 directory '/etc/cron.d' do
   action :create
 end
 
-install_name = if node['tomcat']['run_single_instance']
-                 'tomcat-single'
-               else
-                 'tomcat-multi'
-               end
+# last folder of alfresco_home
+install_name = node['appserver']['alfresco']['home'].split('/').last
+log "Tomcat folder name: #{install_name}"
 
 apache_tomcat install_name do
   url node['tomcat']['tar']['url']
@@ -92,9 +93,9 @@ apache_tomcat install_name do
   user node['tomcat']['user']
   group node['tomcat']['group']
 
-  if node['tomcat']['run_single_instance']
+  if run_single_instance
     apache_tomcat_instance node['tomcat']['single_instance'] do
-      single_instance node['tomcat']['run_single_instance']
+      single_instance run_single_instance
       setenv_options do
         config(
           [
@@ -124,13 +125,6 @@ apache_tomcat install_name do
                   tomcat_cache_path: "#{alfresco_home}/temp")
       end
 
-      # %W(catalina.properties catalina.policy logging.properties tomcat-users.xml).each do |linked_file|
-      #   link "linking #{linked_file}" do
-      #     target_file "#{alfresco_home}/conf/#{linked_file}"
-      #     to "#{alfresco_home}/conf/#{linked_file}"
-      #   end
-      # end
-
       apache_tomcat_config 'context' do
         source node['tomcat']['context_template_source']
         cookbook node['tomcat']['context_template_cookbook']
@@ -139,11 +133,11 @@ apache_tomcat install_name do
 
   else
 
-    node['tomcat']['instances'].each do |name, attrs|
-      logs_path = attrs['logs_path'] || "#{alfresco_home}/#{name}/logs"
-      cache_path = attrs['cache_path'] || "#{alfresco_home}/#{name}/temp"
+    node['tomcat']['instances'].each do |instance_name, attrs|
+      logs_path = attrs['logs_path'] || "#{alfresco_home}/#{instance_name}/logs"
+      cache_path = attrs['cache_path'] || "#{alfresco_home}/#{instance_name}/temp"
 
-      apache_tomcat_instance name do
+      apache_tomcat_instance instance_name do
         setenv_options do
           config(
             [
@@ -164,7 +158,7 @@ apache_tomcat install_name do
           end
         end
 
-        template "/etc/cron.d/#{name}-cleaner.cron" do
+        template "/etc/cron.d/#{instance_name}-cleaner.cron" do
           source 'tomcat/cleaner.cron.erb'
           owner 'root'
           group 'root'
@@ -180,7 +174,7 @@ apache_tomcat install_name do
 
         %w(catalina.properties catalina.policy logging.properties tomcat-users.xml).each do |linked_file|
           link "linking #{linked_file}" do
-            target_file "#{alfresco_home}/#{name}/conf/#{linked_file}"
+            target_file "#{alfresco_home}/#{instance_name}/conf/#{linked_file}"
             to "#{alfresco_home}/conf/#{linked_file}"
             owner node['tomcat']['user']
             group node['tomcat']['group']
@@ -194,16 +188,33 @@ apache_tomcat install_name do
           mode '0755'
           action :create
         end
-
       end
 
       template 'Creating logging.properties file' do
         path "#{alfresco_home}/conf/logging.properties"
         source 'tomcat/logging.properties.erb'
-        owner 'root'
-        group 'root'
+        owner node['tomcat']['user']
+        group node['tomcat']['group']
         mode '0644'
       end
+    end
+  end
+end
+
+global_templates = node['tomcat']['global_templates']
+unless global_templates.to_a.empty?
+  global_templates.each do |global_template|
+    directory global_template['dest'] do
+      action :create
+      recursive true
+    end
+
+    template "#{global_template['dest']}/#{global_template['filename']}" do
+      source "tomcat/#{global_template['filename']}.erb"
+      owner global_template['owner']
+      group global_template['owner']
+      only_if { [true, false].include?(global_template['onlyIf']) ? global_template['onlyIf'] : true }
+      mode 0700
     end
   end
 end
