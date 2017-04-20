@@ -3,8 +3,6 @@ control 'templates\-existance' do
   title 'Templates Existance'
   desc 'Checks that templates have been correctly created'
 
-  components = %w(alfresco share solr)
-
   describe file('/usr/share/tomcat/bin/setenv.sh') do
     it { should be_file }
     it { should exist }
@@ -16,8 +14,8 @@ control 'templates\-existance' do
     its('content') { should match '\-Dsolr.solr.content.dir=/usr/share/tomcat/alf_data/solrContentStore' }
     its('content') { should match '\-Dsolr.solr.model.dir=/usr/share/tomcat/alf_data/newAlfrescoModels' }
     its('content') { should match '\-Djava.util.logging.config.file=/usr/share/tomcat/conf/logging.properties' }
-    its('content') { should match '\-Dlog4j.configuration=alfresco/log4j.properties' }
-    its('content') { should match '\-Dlogfilename=/usr/share/tomcat/logs/alfresco.log' }
+    # its('content') { should match '\-Dlog4j.configuration=alfresco/log4j.properties' }
+    # its('content') { should match '\-Dlogfilename=/usr/share/tomcat/logs/alfresco.log' }
     its('content') { should match '\-XX:ErrorFile=/usr/share/tomcat/logs/jvm_crash%p.log' }
     its('content') { should match '\-XX:HeapDumpPath=/usr/share/tomcat/logs/' }
   end

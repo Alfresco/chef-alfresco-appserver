@@ -15,7 +15,9 @@ default['appserver']['alfresco']['home'] = lazy '/usr/share/tomcat'
 default['appserver']['alfresco']['truststore_file'] = lazy '%{appserver.alfresco.home}/alf_data/keystore/alfresco/keystore/ssl.truststore'
 default['appserver']['alfresco']['truststore_type'] = 'JCEKS'
 default['appserver']['alfresco']['truststore_password'] = 'kT9X6oe68t'
-default['appserver']['alfresco']['server_info'] = 'Alfresco (localhost)'
+default['appserver']['alfresco']['server_info'] = 'Apache Tomcat'
+default['appserver']['alfresco']['server_number'] = '0.0.0.0'
+default['appserver']['alfresco']['server_built'] = ''
 default['appserver']['ssl_enabled'] = true
 
 # appserver specific attributes

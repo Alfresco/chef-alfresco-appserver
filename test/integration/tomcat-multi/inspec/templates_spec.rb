@@ -75,13 +75,6 @@ control 'templates-existance' do
     end
   end
 
-  describe file('/usr/share/tomcat/lib/org/apache/catalina/util/ServerInfo.properties') do
-    it { should be_file }
-    it { should exist }
-    its('owner') { should eq 'tomcat' }
-    its('content') { should match 'server.info=Alfresco \(localhost\)' }
-  end
-
   describe file('/usr/share/tomcat/share/conf/Catalina/localhost/share.xml') do
     it { should be_file }
     it { should exist }

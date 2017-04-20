@@ -1,4 +1,4 @@
-<Context swallowOutput="<%= node['tomcat']['swallow_output'] %>" useHttpOnly="<%= node['tomcat']['use_http_only'] %>" privileged="false">
+<Context swallowOutput="<%= node['tomcat']['swallow_output'] %>" useHttpOnly="<%= node['tomcat']['use_http_only'] %>">
     <!-- Default set of monitored resources -->
     <Valve className="org.apache.catalina.authenticator.SSLAuthenticator" securePagesWithPragma="false" />
     <WatchedResource>WEB-INF/web.xml</WatchedResource>

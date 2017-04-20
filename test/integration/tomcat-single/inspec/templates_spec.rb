@@ -49,13 +49,6 @@ control 'templates-existance' do
     its('content') { should_not match 'Connector port=\"8090\"' }
   end
 
-  describe file('/usr/share/tomcat/lib/org/apache/catalina/util/ServerInfo.properties') do
-    it { should be_file }
-    it { should exist }
-    its('owner') { should eq 'tomcat' }
-    its('content') { should match 'server.info=Alfresco \(localhost\)' }
-  end
-
   describe file('/usr/share/tomcat/share/conf/Catalina/localhost/share.xml') do
     it { should be_file }
     it { should exist }
