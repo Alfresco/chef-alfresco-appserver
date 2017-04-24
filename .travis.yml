@@ -11,7 +11,8 @@ env:
 before_install:
   - curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chefdk -v 1.2.20
   # necessary for inspec tests in Git
-  - sudo apt-get install git-all -y
+  - sudo apt-get update -qq
+  - sudo apt-get install git -y
 install:
   - chef exec bundle
   - chef exec berks
