@@ -4,7 +4,8 @@ sudo: required
 services: docker
 
 env:
-  - chef-version=12.18.31
+  global:
+    - CHEF-VERSION=12.18.31
   matrix:
     - SUITE=tomcat-multi
     - SUITE=tomcat-single
@@ -13,7 +14,7 @@ before_install: curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -
 install:
   - chef exec bundle
   - gem uninstall chef
-  - gem install chef -v "=$chef-version"
+  - gem install chef -v "=$CHEF-VERSION"
   - chef exec berks
 
 before_script: sudo iptables -L DOCKER || sudo iptables -N DOCKER
