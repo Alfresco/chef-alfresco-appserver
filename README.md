@@ -1,7 +1,7 @@
 # chef-alfresco-appserver cookbook
-[![Build Status](https://travis-ci.org/Alfresco/chef-alfresco-appserver.svg)](https://travis-ci.org/Alfresco/chef-alfresco-appserver)
+[![Build Status](https://travis-ci.org/Alfresco/chef-alfresco-appserver.svg)](https://travis-ci.org/Alfresco/chef-alfresco-appserver?branch=develop)
 [![Cookbook](http://img.shields.io/cookbook/v/alfresco-appserver.svg)](https://github.com/Alfresco/chef-alfresco-appserver)
-[![Coverage Status](https://coveralls.io/repos/github/Alfresco/chef-alfresco-appserver/badge.svg)](https://coveralls.io/github/Alfresco/chef-alfresco-appserver)
+[![Coverage Status](https://coveralls.io/repos/github/Alfresco/chef-alfresco-appserver/badge.svg?branch=develop)](https://coveralls.io/github/Alfresco/chef-alfresco-appserver?branch=develop)
 
 This cookbook will install the Application Server part of the Alfresco stack.
 The default choice is Tomcat, but it can be expanded to use your own application server.
