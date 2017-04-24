@@ -49,7 +49,7 @@ apache_tomcat install_name do
       source 'tomcat/cleaner.cron.erb'
       owner 'root'
       group 'root'
-      mode '0755'
+      mode 00755
       variables(tomcat_log_path: "#{alfresco_home}/logs",
                 tomcat_cache_path: "#{alfresco_home}/temp")
     end

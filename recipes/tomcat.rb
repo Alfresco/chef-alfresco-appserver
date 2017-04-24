@@ -51,12 +51,15 @@ unless global_templates.to_a.empty?
       recursive true
     end
 
+    log "global_template['dest'] --> #{global_template['dest']}"
+
     template "#{global_template['dest']}/#{global_template['filename']}" do
+      path "#{global_template['dest']}/#{global_template['filename']}"
       source "tomcat/#{global_template['filename']}.erb"
       owner global_template['owner']
       group global_template['owner']
       only_if { [true, false].include?(global_template['onlyIf']) ? global_template['onlyIf'] : true }
-      mode 0700
+      mode 00700
     end
   end
 end
@@ -72,6 +75,7 @@ end
 maven_setup 'setup maven' do
   maven_home node['maven']['m2_home']
   only_if { node['appserver']['install_maven'] }
+  action :create
 end
 
 artifact 'deploy artifacts' if node['appserver']['download_artifacts']

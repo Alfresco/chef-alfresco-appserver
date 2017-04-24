@@ -4,7 +4,7 @@ default['tomcat']['tar']['checksum'] = 'e0fe43d1fa17013bf7b3b2d3f71105d606a0582c
 default['tomcat']['tar']['version'] = '7.0.59'
 
 # Tomcat attributes for base instance
-default['tomcat']['port'] = 8080
+default['tomcat']['port'] = node['appserver']['port']
 default['tomcat']['proxy_port'] = nil
 default['tomcat']['ssl_port'] = 8443
 default['tomcat']['ssl_proxy_port'] = nil
@@ -41,7 +41,7 @@ default['tomcat']['memcached_nodes'] = ''
 default['tomcat']['additional_tomcat_packages'] = %w(tomcat-native apr)
 
 # Use multi-homed tomcat installation
-default['tomcat']['run_single_instance'] = false
+default['tomcat']['run_single_instance'] = node['appserver']['run_single_instance']
 
 # Context.xml settings
 default['tomcat']['swallow_output'] = true
@@ -91,8 +91,8 @@ default['tomcat']['solr_tomcat_instance']['java_options']['xmx_memory'] = "-Xmx#
 
 default['tomcat']['base_version'] = 7
 default['tomcat']['single_instance'] = 'alfresco'
-default['tomcat']['user'] = 'tomcat'
-default['tomcat']['group'] = 'tomcat'
+default['tomcat']['user'] = node['appserver']['user']
+default['tomcat']['group'] = node['appserver']['group']
 
 default['tomcat']['jmxremote_path'] = lazy { "#{node['appserver']['alfresco']['home']}/conf" }
 default['tomcat']['jmxremote_access_filename'] = 'jmxremote.access'
@@ -100,17 +100,17 @@ default['tomcat']['jmxremote_password_filename'] = 'jmxremote.password'
 jmxremote_access_fullpath = lazy { "#{node['tomcat']['jmxremote_path']}/#{node['tomcat']['jmxremote_access_filename']}" }
 jmxremote_password_fullpath = lazy { "#{node['tomcat']['jmxremote_path']}/#{node['tomcat']['jmxremote_password_filename']}" }
 
-default['artifacts']['catalina-jmx']['destination'] = lazy '%{appserver.alfresco.home}/lib'
-default['artifacts']['memcached-session-manager']['destination'] = lazy '%{appserver.alfresco.home}/lib'
-default['artifacts']['memcached-session-manager-tc7']['destination'] = lazy '%{appserver.alfresco.home}/lib'
-default['artifacts']['spymemcached']['destination'] = lazy '%{appserver.alfresco.home}/lib'
-default['artifacts']['msm-kryo-serializer']['destination'] = lazy '%{appserver.alfresco.home}/lib'
-default['artifacts']['kryo-serializers']['destination'] = lazy '%{appserver.alfresco.home}/lib'
-default['artifacts']['kryo']['destination'] = lazy '%{appserver.alfresco.home}/lib'
-default['artifacts']['minlog']['destination'] = lazy '%{appserver.alfresco.home}/lib'
-default['artifacts']['reflectasm']['destination'] = lazy '%{appserver.alfresco.home}/lib'
-default['artifacts']['asm']['destination'] = lazy '%{appserver.alfresco.home}/lib'
-default['artifacts']['objenesis']['destination'] = lazy '%{appserver.alfresco.home}/lib'
+default['artifacts']['catalina-jmx']['destination'] = lazy { "#{node['appserver']['alfresco']['home']}/lib" }
+default['artifacts']['memcached-session-manager']['destination'] = lazy { "#{node['appserver']['alfresco']['home']}/lib" }
+default['artifacts']['memcached-session-manager-tc7']['destination'] = lazy { "#{node['appserver']['alfresco']['home']}/lib" }
+default['artifacts']['spymemcached']['destination'] = lazy { "#{node['appserver']['alfresco']['home']}/lib" }
+default['artifacts']['msm-kryo-serializer']['destination'] = lazy { "#{node['appserver']['alfresco']['home']}/lib" }
+default['artifacts']['kryo-serializers']['destination'] = lazy { "#{node['appserver']['alfresco']['home']}/lib" }
+default['artifacts']['kryo']['destination'] = lazy { "#{node['appserver']['alfresco']['home']}/lib" }
+default['artifacts']['minlog']['destination'] = lazy { "#{node['appserver']['alfresco']['home']}/lib" }
+default['artifacts']['reflectasm']['destination'] = lazy { "#{node['appserver']['alfresco']['home']}/lib" }
+default['artifacts']['asm']['destination'] = lazy { "#{node['appserver']['alfresco']['home']}/lib" }
+default['artifacts']['objenesis']['destination'] = lazy { "#{node['appserver']['alfresco']['home']}/lib" }
 
 # attributes for share.xml.erb
 default['tomcat']['memcached']['sticky'] = true
@@ -126,10 +126,10 @@ default['tomcat']['repo_tomcat_instance']['java_options'] = node['tomcat']['java
 default['tomcat']['share_tomcat_instance']['java_options'] = node['tomcat']['java_options_hash']
 default['tomcat']['solr_tomcat_instance']['java_options'] = node['tomcat']['java_options_hash']
 
-default['tomcat']['repo_tomcat_instance']['java_options']['rmi_and_alfhome'] = lazy '-Dalfresco.home=%{appserver.alfresco.home}/alfresco -Djava.rmi.server.hostname=%{appserver.alfresco.rmi_server_hostname}'
+default['tomcat']['repo_tomcat_instance']['java_options']['rmi_and_alfhome'] = lazy { "-Dalfresco.home=#{node['appserver']['alfresco']['home']}/alfresco -Djava.rmi.server.hostname=#{node['appserver']['alfresco']['rmi_server_hostname']}" }
 default['tomcat']['repo_tomcat_instance']['java_options']['log_paths'] = lazy { "-Djava.util.logging.config.file=#{node['appserver']['alfresco']['home']}/alfresco/conf/logging.properties -Dlog4j.configuration=alfresco/log4j.properties -Xloggc:#{node['appserver']['alfresco']['home']}/alfresco/logs/gc.log -Dlogfilename=#{node['appserver']['alfresco']['home']}/alfresco/logs/alfresco.log -XX:ErrorFile=#{node['appserver']['alfresco']['home']}/alfresco/logs/jvm_crash%p.log -XX:HeapDumpPath=#{node['appserver']['alfresco']['home']}/alfresco/logs/" }
 
-default['tomcat']['share_tomcat_instance']['java_options']['rmi'] = lazy '-Djava.rmi.server.hostname=%{appserver.alfresco.rmi_server_hostname}'
+default['tomcat']['share_tomcat_instance']['java_options']['rmi'] = lazy { "-Djava.rmi.server.hostname=#{node['appserver']['alfresco']['rmi_server_hostname']}" }
 default['tomcat']['share_tomcat_instance']['java_options']['log_paths'] = lazy { "-Djava.util.logging.config.file=#{node['appserver']['alfresco']['home']}/share/conf/logging.properties -Dlog4j.configuration=alfresco/log4j.properties -Xloggc:#{node['appserver']['alfresco']['home']}/share/logs/gc.log -Dlogfilename=#{node['appserver']['alfresco']['home']}/share/logs/share.log -XX:ErrorFile=#{node['appserver']['alfresco']['home']}/share/logs/jvm_crash%p.log -XX:HeapDumpPath=#{node['appserver']['alfresco']['home']}/share/logs/" }
 
 default['tomcat']['solr_tomcat_instance']['java_options']['rmi_and_solr'] = lazy { "-Djava.rmi.server.hostname=#{node['appserver']['alfresco']['rmi_server_hostname']} -Dsolr.solr.model.dir=#{node['appserver']['alfresco']['solr']['alfresco_models']} -Dsolr.solr.home=#{node['appserver']['alfresco']['solr']['home']} -Dsolr.solr.content.dir=#{node['appserver']['alfresco']['solr']['contentstore.path']}" }
@@ -138,22 +138,22 @@ default['tomcat']['solr_tomcat_instance']['java_options']['log_paths'] = lazy { 
 default['tomcat']['global_templates'] = [{
   'dest' => node['tomcat']['jmxremote_path'],
   'filename' => node['tomcat']['jmxremote_access_filename'],
-  'owner' => node['appserver']['alfresco']['user'],
+  'owner' => node['tomcat']['user'],
 }, {
   'dest' => node['tomcat']['jmxremote_path'],
   'filename' => node['tomcat']['jmxremote_password_filename'],
-  'owner' => node['appserver']['alfresco']['user'],
+  'owner' => node['tomcat']['user'],
 }, {
   'dest' => "#{node['appserver']['alfresco']['home']}/lib/org/apache/catalina/util",
   'filename' => 'ServerInfo.properties',
-  'owner' => node['appserver']['alfresco']['user'],
+  'owner' => node['tomcat']['user'],
 }, {
   'dest' => '/etc/security/limits.d',
   'filename' => 'tomcat_limits.conf',
-  'owner' => node['appserver']['alfresco']['user'],
+  'owner' => node['tomcat']['user'],
 }, {
   'dest' => "#{node['appserver']['alfresco']['home']}/share/conf/Catalina/localhost",
   'filename' => 'share.xml',
-  'owner' => node['appserver']['alfresco']['user'],
+  'owner' => node['tomcat']['user'],
   'onlyIf' => !node['tomcat']['memcached_nodes'].empty? && node['appserver']['alfresco']['components'].include?('share'),
 }]

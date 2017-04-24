@@ -1,6 +1,6 @@
 name 'alfresco-appserver'
 maintainer 'Alfresco Tooling & Automation'
-maintainer_email 'marco.mancuso@alfresco.com'
+maintainer_email 'devops@alfresco.com'
 license 'Apache 2.0'
 description 'Installs/Configures chef-alfresco-appserver'
 long_description 'Installs/Configures chef-alfresco-appserver'

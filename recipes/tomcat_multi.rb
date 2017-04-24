@@ -59,7 +59,7 @@ apache_tomcat install_name do
         source 'tomcat/cleaner.cron.erb'
         owner 'root'
         group 'root'
-        mode '0755'
+        mode 00755
         variables(tomcat_log_path: logs_path,
                   tomcat_cache_path: cache_path)
       end
@@ -75,14 +75,14 @@ apache_tomcat install_name do
           to "#{alfresco_home}/conf/#{linked_file}"
           owner node['tomcat']['user']
           group node['tomcat']['group']
-          mode '0755'
+          mode 00755
         end
       end
 
       directory attrs['endorsed_dir'] do
         owner node['tomcat']['user']
         group node['tomcat']['group']
-        mode '0755'
+        mode 00755
         action :create
       end
     end
@@ -92,7 +92,7 @@ apache_tomcat install_name do
       source 'tomcat/logging.properties.erb'
       owner node['tomcat']['user']
       group node['tomcat']['group']
-      mode '0644'
+      mode 00644
     end
   end
 end
