@@ -51,7 +51,6 @@ Just add the reference of this cookbook inside your `metadata.rb` file:
 depends 'alfresco-appserver', '~> v0.1'
 ```
 
-
 Main recipe is:
 
 - `alfresco-appserver::default` will install the Application Server of your choice ( specified under the `default['appserver']['engine']` attribute)
