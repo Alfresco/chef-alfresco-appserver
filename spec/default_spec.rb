@@ -14,6 +14,7 @@ RSpec.describe 'alfresco-appserver::default' do
   end
 
   it 'should include tomcat as default recipe' do
+    chef_run.node.normal['appserver']['engine'] = 'tomcat'
     chef_run.converge(described_recipe)
     expect(chef_run).to include_recipe('alfresco-appserver::tomcat')
   end
