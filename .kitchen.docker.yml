@@ -25,6 +25,8 @@ suites:
       inspec_tests:
         - name: chef-alfresco-inspec-tomcat
           git: https://github.com/Alfresco/chef-alfresco-inspec-tomcat
+        - name: utils
+          git: https://github.com/Alfresco/chef-alfresco-inspec-utils
     data_bags_path: "test/integration/data_bags"
     attributes: {
       "appserver": {
@@ -45,6 +47,8 @@ suites:
       inspec_tests:
       - name: chef-alfresco-inspec-tomcat
         git: https://github.com/Alfresco/chef-alfresco-inspec-tomcat
+      - name: utils
+        git: https://github.com/Alfresco/chef-alfresco-inspec-utils        
     data_bags_path: "test/integration/data_bags"
     attributes: {
       "appserver": {

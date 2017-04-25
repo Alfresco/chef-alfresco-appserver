@@ -28,6 +28,8 @@ suites:
       inspec_tests:
         - name: chef-alfresco-inspec-tomcat
           git: git@github.com:Alfresco/chef-alfresco-inspec-tomcat.git
+        - name: utils
+          git: https://github.com/Alfresco/chef-alfresco-inspec-utils
     data_bags_path: "test/integration/data_bags"
     attributes: {
       "appserver": {
@@ -43,11 +45,13 @@ suites:
   - name: tomcat-single
     run_list:
       - recipe[alfresco-appserver::default]
-      - recipe[alfresco-utils::node_json]      
+      - recipe[alfresco-utils::node_json]
     verifier:
       inspec_tests:
       - name: chef-alfresco-inspec-tomcat
         git: git@github.com:Alfresco/chef-alfresco-inspec-tomcat.git
+      - name: utils
+        git: https://github.com/Alfresco/chef-alfresco-inspec-utils
     data_bags_path: "test/integration/data_bags"
     attributes: {
       "appserver": {
