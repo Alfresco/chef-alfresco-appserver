@@ -18,5 +18,4 @@ RSpec.describe 'alfresco-appserver::default' do
     chef_run.converge(described_recipe)
     expect(chef_run).to include_recipe('alfresco-appserver::tomcat')
   end
-
 end
