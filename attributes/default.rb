@@ -28,4 +28,3 @@ default['appserver']['install_maven'] = false
 default['appserver']['port'] = 8080
 default['appserver']['ssl_enabled'] = true
 default['appserver']['run_single_instance'] = false
-default['appserver']['generate_node_json'] = false

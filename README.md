@@ -41,7 +41,6 @@ The following platforms are supported and tested with Test Kitchen:
 | default['appserver']['port'] | Int  | Port of the Application Server | 8080 |
 | default['appserver']['ssl_enabled']  | Boolean  | Wheter to enable ssl for the application server |  true |
 | default['appserver']['run_single_instance']  | Boolean  | Use an application server with all the webapps or one application server per webapp |  false |
-| default['appserver']'generate_node_json'] | Boolean | generate a json file with the content of the chef node (generally used for inspec tests) | false  |
 
 ## Usage
 

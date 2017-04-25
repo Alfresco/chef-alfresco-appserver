@@ -23,6 +23,7 @@ suites:
   - name: tomcat-multi
     run_list:
       - recipe[alfresco-appserver::default]
+      - recipe[alfresco-utils::node_json]
     verifier:
       inspec_tests:
         - name: chef-alfresco-inspec-tomcat
@@ -33,7 +34,6 @@ suites:
         "download_artifacts" : true,
         "install_java" : true,
         "install_maven" : true,
-        "generate_node_json" : true,
         "run_single_instance" : false
       },
       "tomcat": {
@@ -43,6 +43,7 @@ suites:
   - name: tomcat-single
     run_list:
       - recipe[alfresco-appserver::default]
+      - recipe[alfresco-utils::node_json]      
     verifier:
       inspec_tests:
       - name: chef-alfresco-inspec-tomcat
@@ -53,7 +54,6 @@ suites:
         "download_artifacts" : true,
         "install_java" : true,
         "install_maven" : true,
-        "generate_node_json" : true,
         "run_single_instance" : true,
       },
       "tomcat": {
