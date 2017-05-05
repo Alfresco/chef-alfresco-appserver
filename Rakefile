@@ -2,10 +2,18 @@
 
 require 'foodcritic'
 require 'rspec/core/rake_task'
+require 'yamllint/rake_task'
 
 desc 'Runs cookstyle tests'
 task :cookstyle do
   sh 'chef exec bundle exec cookstyle'
+end
+
+desc 'Runs yamllint checks'
+task :yamllint do
+  YamlLint::RakeTask.new do |t|
+    t.paths = %w( \.*\.y*ml )
+  end
 end
 
 desc 'Runs foodcritic test'
@@ -57,4 +65,4 @@ namespace :integration do
   end
 end
 
-task default: [:foodcritic, :cookstyle, :chefspec]
+task default: [:yamllint, :foodcritic, :cookstyle, :chefspec]
