@@ -4,7 +4,7 @@ maintainer_email 'devops@alfresco.com'
 license 'Apache 2.0'
 description 'Installs/Configures chef-alfresco-appserver'
 long_description 'Installs/Configures chef-alfresco-appserver'
-version '1.1'
+version '1.2'
 
 chef_version '~> 12'
 
