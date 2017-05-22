@@ -32,13 +32,13 @@ apache_tomcat install_name do
     logs_path = attrs['logs_path'] || "#{alfresco_home}/#{instance_name}/logs"
     cache_path = attrs['cache_path'] || "#{alfresco_home}/#{instance_name}/temp"
 
+    umask = attrs['umask']
+    setenv_options = ["export JAVA_OPTS=\"#{attrs['java_options'].map { |_k, v| v }.join(' ')}\""]
+    setenv_options.push("umask #{umask}") unless umask.to_s.empty?
+
     apache_tomcat_instance instance_name do
       setenv_options do
-        config(
-          [
-            "export JAVA_OPTS=\"#{attrs['java_options'].map { |_k, v| v }.join(' ')}\"",
-          ]
-        )
+        config(setenv_options)
       end
       apache_tomcat_config 'server' do
         source node['tomcat']['server_template_source']

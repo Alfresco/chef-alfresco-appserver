@@ -61,6 +61,7 @@ default['tomcat']['java_options_hash']['recycle_facades'] = '-Dorg.apache.catali
 # default['tomcat']['java_options_hash']['path_delimiters'] = '-Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=false -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=false'
 default['tomcat']['java_options_hash']['custmom_header_status_message'] = '-Dorg.apache.coyote.USE_CUSTOM_STATUS_MSG_IN_HEADER=false'
 default['tomcat']['java_options_hash']['others'] = '-Djava.library.path=/usr/lib64 -Djava.awt.headless=true'
+default['tomcat']['umask'] = '002'
 
 default['tomcat']['repo_tomcat_instance']['port'] = 8070
 default['tomcat']['repo_tomcat_instance']['ssl_port'] = node['tomcat']['ssl_port']
@@ -70,6 +71,7 @@ default['tomcat']['repo_tomcat_instance']['jmx_port'] = 40000
 default['tomcat']['repo_tomcat_instance']['xmx_ratio'] = 0.42
 alfresco_memory = "#{(memory_total.to_i * node['tomcat']['repo_tomcat_instance']['xmx_ratio']).floor / 1024}m"
 default['tomcat']['repo_tomcat_instance']['java_options']['xmx_memory'] = "-Xmx#{alfresco_memory}"
+default['tomcat']['repo_tomcat_instance']['umask'] = '002'
 
 default['tomcat']['share_tomcat_instance']['port'] = 8081
 default['tomcat']['share_tomcat_instance']['ssl_port'] = node['tomcat']['ssl_port']

@@ -12,6 +12,10 @@ end
 # last folder of alfresco_home
 install_name = node['appserver']['alfresco']['home'].split('/').last
 
+umask = node['tomcat']['umask']
+setenv_options = ["export JAVA_OPTS=\"#{node['tomcat']['java_options'].map { |_k, v| v }.join(' ')}\""]
+setenv_options.push("umask #{umask}") unless umask.to_s.empty?
+
 apache_tomcat install_name do
   url node['tomcat']['tar']['url']
   # Note: Checksum is SHA-256, not MD5 or SHA1. Generate using `shasum -a 256 /path/to/tomcat.tar.gz`
@@ -26,11 +30,7 @@ apache_tomcat install_name do
   apache_tomcat_instance node['tomcat']['single_instance'] do
     single_instance true
     setenv_options do
-      config(
-        [
-          "export JAVA_OPTS=\"#{node['tomcat']['java_options'].map { |_k, v| v }.join(' ')}\"",
-        ]
-      )
+      config(setenv_options)
     end
     apache_tomcat_config 'server' do
       source node['tomcat']['server_template_source']
